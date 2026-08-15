@@ -19,8 +19,11 @@ connectDB();
 const app = express();
 const httpServer = createServer(app);
 
+// Enable trust proxy for platforms behind reverse proxies (like Render)
+app.set('trust proxy', 1);
+
 const clientUrls = process.env.CLIENT_URL ? 
-    process.env.CLIENT_URL.split(',').map(url => url.trim()) : [];
+    process.env.CLIENT_URL.split(',').map(url => url.trim().replace(/\/+$/, '')).filter(Boolean) : [];
 
 const allowedOrigins = [
     'http://localhost',
