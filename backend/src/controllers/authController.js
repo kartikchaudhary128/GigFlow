@@ -13,9 +13,10 @@ export const register = async (req, res) => {
         }
 
         const user = await User.create({name, email, password});
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
         res.status(201).json({
             success: true, 
+            token,
             user: {
                 _id: user._id,
                 name: user.name,
@@ -44,9 +45,10 @@ export const login = async (req, res) => {
             return res.status(401).json({success: false, message: "Password is incorrect"});
         }
 
-        generateToken(res, user._id);
+        const token = generateToken(res, user._id);
         res.status(200).json({
             success: true,
+            token,
             user: {
                 _id: user._id,
                 name: user.name,

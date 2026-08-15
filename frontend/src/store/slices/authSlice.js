@@ -4,6 +4,9 @@ import axios from "../../utils/axios";
 export const register = createAsyncThunk('auth/register', async(userData, {rejectWithValue}) => {
     try {
         const {data} = await axios.post('/api/auth/register', userData);
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+        }
         return data;
     } catch(error) {
         return rejectWithValue(error.response?.data?.message || 'Registration failed');
@@ -13,6 +16,9 @@ export const register = createAsyncThunk('auth/register', async(userData, {rejec
 export const login = createAsyncThunk('auth/login', async(userData, {rejectWithValue}) => {
     try {
         const {data} = await axios.post('/api/auth/login', userData);
+        if (data.token) {
+            localStorage.setItem('token', data.token);
+        }
         return data;
     } catch (error) {
         return rejectWithValue(error.response?.data?.message || 'Login failed');
@@ -22,7 +28,9 @@ export const login = createAsyncThunk('auth/login', async(userData, {rejectWithV
 export const logout = createAsyncThunk('auth/logout', async(_, {rejectWithValue}) => {
     try {
         await axios.post('/api/auth/logout');
+        localStorage.removeItem('token');
     } catch(error) {
+        localStorage.removeItem('token');
         return rejectWithValue(error.response?.data?.message || 'Logout failed');
     }
 });
